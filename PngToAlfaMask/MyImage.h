@@ -2,6 +2,7 @@
 #include <iostream>
 #include <Image.hpp>
 #include <string>
+#include <vector>
 #include <sstream>
 
 typedef unsigned int u16;
