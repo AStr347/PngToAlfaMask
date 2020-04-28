@@ -1,0 +1,11 @@
+*.dll
+SFML-2.5.1/
+*.png
+*.bmp
+*.o
+*.obj
+*.pdb
+*.log
+*.tlog
+Debug/
+PngToAlfaMask/x64
