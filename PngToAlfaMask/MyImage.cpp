@@ -10,18 +10,16 @@ void MyImage::PixelsToPayload(sf::Image& img) {
 		}
 	}
 
-	u16 bit = 0;
-	u16 bitcount = 0;
+	u16 now = 1;
 	for (u16 i = 0; i < bits.size(); i++) {
-		if (bitcount < 7) {
-			bit += bits[i] << bitcount;
-			bitcount++;
+		if (((i + 1) % 8) == 0) {
+			now = (now << 1) + bits[i];
+			now = now & 0b011111111;
+			payload.push_back(now);
+			now = 0;
 		}
 		else {
-			bit += bits[i] << bitcount;
-			payload.push_back(bit);
-			bit = 0;
-			bitcount = 0;
+			now = (now << 1) + bits[i];
 		}
 	}
 
@@ -66,16 +64,16 @@ std::string  MyImage::ToString() {
 	}
 
 	std::string s = "";
-	s += "struct {\n\tunsigned key : " + std::string(keysizes[type]) + ";\n\t";
+	s += "const struct {\n\tunsigned key : " + std::string(keysizes[type]) + ";\n\t";
 	s += "unsigned width : " + std::string(wsizes[type]) + ";\n\t";
-	s += "unsigned height: " + std::string(hsizes[type]) + ";\n\t";
+	s += "unsigned height : " + std::string(hsizes[type]) + ";\n\t";
 	s += "u8 payload[" + std::to_string(payload.size()) + "];\n";
 	s += "} " + name + " = {\n\t";
 	s += ".key = " + std::string(bitkeys[type]) + ",\n\t";
 	s += ".width = " + std::to_string(width - 1) + ",\n\t";
 	s += ".height = " + std::to_string(height - 1) + ",\n\t";
 	s += ".payload = {" + spayload + "},\n";
-	s += "}\n\n";
+	s += "};\n\n";
 	return s;
 }
 
