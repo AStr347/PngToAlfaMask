@@ -24,12 +24,21 @@
     <ClCompile Include="Paths.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Amask.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyImage.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="paths.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Amask.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="arch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

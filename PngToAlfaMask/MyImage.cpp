@@ -1,8 +1,8 @@
 #include "MyImage.h"
-
+#include "paths.h"
 
 void MyImage::PixelsToPayload(sf::Image& img) {
-	std::vector<u16> bits;
+	vec_i bits;
 	for (u16 i = 0; i < height; i++) {
 		for (u16 j = 0; j < width; j++) {
 			u16 color = img.getPixel(j, i).toInteger() == 255 ? 1 : 0;
@@ -10,23 +10,25 @@ void MyImage::PixelsToPayload(sf::Image& img) {
 		}
 	}
 
-	u16 now = 1;
+	u16 bit = 0;
+	u16 bitcount = 0;
 	for (u16 i = 0; i < bits.size(); i++) {
-		if (((i + 1) % 8) == 0) {
-			now = (now << 1) + bits[i];
-			now = now & 0b011111111;
-			payload.push_back(now);
-			now = 0;
+		if (bitcount < 7) {
+			bit += bits[i] << bitcount;
+			bitcount++;
 		}
 		else {
-			now = (now << 1) + bits[i];
+			bit += bits[i] << bitcount;
+			payload.push_back(bit);
+			bit = 0;
+			bitcount = 0;
 		}
 	}
 
 
 }
 
-MyImage::MyImage(std::string path) {
+MyImage::MyImage(const str& path) {
 	sf::Image img;
 	if (!img.loadFromFile(path))
 		return;
@@ -48,7 +50,7 @@ MyImage::MyImage(std::string path) {
 		htype = i;
 	}
 
-	type = (wtype > htype ? wtype : htype);
+	type = (wtype > htype ? wtype : htype) + 1;
 
 	width++;
 	height++;
@@ -56,20 +58,20 @@ MyImage::MyImage(std::string path) {
 	PixelsToPayload(img);
 }
 
-std::string  MyImage::ToString() {
-	std::string spayload = "";
+str  MyImage::ToString() {
+	str spayload = "";
 
-	for (int i = 0; i < payload.size(); i++) {
+	for (u16 i = 0; i < payload.size(); i++) {
 		spayload += To_Hex(payload[i]) + ", ";
 	}
 
-	std::string s = "";
-	s += "const struct {\n\tunsigned key : " + std::string(keysizes[type]) + ";\n\t";
-	s += "unsigned width : " + std::string(wsizes[type]) + ";\n\t";
-	s += "unsigned height : " + std::string(hsizes[type]) + ";\n\t";
+	str s = "";
+	s += "const struct {\n\tunsigned key : " + str(keysizes[type]) + ";\n\t";
+	s += "unsigned width : " + str(wsizes[type]) + ";\n\t";
+	s += "unsigned height : " + str(hsizes[type]) + ";\n\t";
 	s += "u8 payload[" + std::to_string(payload.size()) + "];\n";
 	s += "} " + name + " = {\n\t";
-	s += ".key = " + std::string(bitkeys[type]) + ",\n\t";
+	s += ".key = " + str(bitkeys[type]) + ",\n\t";
 	s += ".width = " + std::to_string(width - 1) + ",\n\t";
 	s += ".height = " + std::to_string(height - 1) + ",\n\t";
 	s += ".payload = {" + spayload + "},\n";
@@ -77,18 +79,18 @@ std::string  MyImage::ToString() {
 	return s;
 }
 
-std::string  MyImage::Extern() {
+str  MyImage::Extern() {
 	return "extern amask_t " + name + ";\n\n";
 }
 
-std::string To_Hex(u16 i) {
-	std::string s = "0x";
+str To_Hex(u16 i) {
+	str s = "0x";
 	if (i < 0x10) {
 		s += "0";
 	}
 	std::stringstream ss;
 	ss << s << std::hex << i;
-	std::string result;
+	str result;
 	ss >> result;
 	return result;
 }
@@ -100,4 +102,43 @@ std::ostream& operator <<(std::ostream& os, MyImage& img) {
 		os << img.payload[i] << " ";
 	os << std::dec << std::endl;
 	return os;
+}
+
+
+void MyImage::Png_To_Mask(const str& Inpath, const str& Outpath) {
+	vec_str pngs;
+	std::vector<bool> check;
+	read_directory(Inpath, pngs, check);
+
+	std::vector<MyImage> imgs;
+
+	for (u16 i = 0; i < pngs.size(); i++) {
+		str file = pngs[i];
+
+		u32 len = file.length();
+
+		if (len > 4) {
+			str sub = file.substr((len - 4), 4);
+			if (sub == ".png" || sub == ".bmp") {
+				MyImage img(file);
+				imgs.push_back(img);
+			}
+		}
+	}
+
+	if (imgs.size() != 0) {
+		std::ofstream header(Outpath + "images.h");
+		std::ofstream source(Outpath + "images.c");
+
+		source << "#include \"arch.h\"\n\n\n";
+		header << "#ifmdef PNGS_H\n#define PNGS_H\n#include \"graphics.h\"\n\n";
+
+		for (u16 i = 0; i < imgs.size(); i++) {
+			header << imgs[i].Extern();
+			source << imgs[i].ToString();
+		}
+		header << "#endif//PNGS_H";
+		header.close();
+		source.close();
+	}
 }

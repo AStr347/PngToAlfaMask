@@ -159,11 +159,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Amask.cpp" />
     <ClCompile Include="MyImage.cpp" />
     <ClCompile Include="Paths.cpp" />
     <ClCompile Include="PngToAlfaMask.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Amask.h" />
+    <ClInclude Include="arch.h" />
     <ClInclude Include="MyImage.h" />
     <ClInclude Include="paths.h" />
   </ItemGroup>

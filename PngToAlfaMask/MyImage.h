@@ -4,9 +4,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
-typedef unsigned int u16;
-typedef unsigned long long u32;
+#include <fstream>
+#include "arch.h"
 
 class MyImage
 {
@@ -23,13 +22,14 @@ public:
 	u32 width = 0;
 	u32 height = 0;
 	u16 type = 0;
-	std::string name;
-	std::vector<u16> payload;
+	str name;
+	vec_i payload;
 
-	MyImage(std::string path);
-	std::string ToString();
-	std::string Extern();
+	MyImage(const str& path);
+	str ToString();
+	str Extern();
+	static void Png_To_Mask(const str& Inpath, const str& Outpath);
 };
 
-extern std::string To_Hex(u16 i);
+extern str To_Hex(u16 i);
 extern std::ostream& operator <<(std::ostream& os, MyImage& img);
