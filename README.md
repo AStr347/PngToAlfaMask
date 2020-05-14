@@ -2,6 +2,7 @@
 ##Что бы собрать нужно
 1. Разархивировать SFML-2.5.1.rar в каталог с PngToAlfaMask.slh
 2. Разархивировать Release.rar в /x64/Release/ или /x64/Debug/
+
 ##Применение
 ./PngToAlfaMask.exe Flag Inpath OutPath
 1. Flag=alfa
