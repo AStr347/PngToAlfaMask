@@ -6,8 +6,6 @@
 #include "paths.h"
 
 
-//#define PNG_TO_MASK
-
 u16 main(u16 argc, const char** argv)
 {
 	str Inpath;
