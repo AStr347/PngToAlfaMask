@@ -9,11 +9,11 @@ static u16 string_to_u16(const str& s) {
 }
 
 static u16 char_to_u16(const char c) {
-	u16 result = c - 48;
+	u16 result = c - '0';
 	if (c >= 'A' && c <= 'F')
-		result = c - 55;
+		result = c - 'A' + 10;
 	else if (c >= 'a' && c <= 'f')
-		result = c - 87;
+		result = c - 'a' + 10;
 	return result;
 }
 
@@ -33,7 +33,7 @@ Amask::Amask(const str& _name, u16 _width, u16 _height, const str& _payload)
 	height = _height;
 	str tmp;
 	for (auto i : _payload) {
-		if (i != ',' && i != ' ') {
+		if (i != ',' && i != ' ' && i != '\t') {
 			tmp += i;
 		}
 		else {
@@ -58,7 +58,7 @@ void Amask::ToPng(const str& path) {
 	
 
 	vec_i bits;
-	const u16 size = fwidth * fheight;
+	u16 size = fwidth * fheight;
 	bits.resize(size);
 	u16 index = 0;
 
@@ -70,19 +70,15 @@ void Amask::ToPng(const str& path) {
 	}
 
 	index = 0;
-	vec_str matrix;
-	str tmp = "";
 	for (u16 i = 0; i < fheight; i++) {
 		for (u16 j = 0; j < fwidth; j++) {
 			if (bits[index]) {
 				img.setPixel(j, i, Black);
 			}
-			tmp += bits[index] ? '1' : '0';
 			index++;
 		}
-		matrix.push_back(tmp);
-		tmp = "";
 	}
+	//std::cout << path + name + ".png" << std::endl;
 
 	img.saveToFile(path + name + ".png");
 }
@@ -102,7 +98,7 @@ std::vector<Amask> Amask::ReadFile(const str& path)
 			line = "";
 		}
 	}
-	std::regex re("\\} ([_\\w\\d]+) = \\{\n\t\\.key = ([\\db]+),\n\t\\.width = (\\d+),\n\t\\.height = (\\d+),\n\t\\.payload = \\{([\\w\\d,\\s]+)\\},\n\\};");
+	std::regex re("\\} ([_\\w\\d]+) = \\{\n\t\\.key = ([\\db]+),\n\t\\.width = (\\d+),\n\t\\.height = (\\d+),\n\t\\.payload = \\{([\\w\\d,\\s\t]+)\\},\n\\};");
 	std::smatch mask_match;
 	for (auto i : alllines) {
 		if (std::regex_search(i, mask_match, re)) {

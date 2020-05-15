@@ -4,13 +4,14 @@
 #include "MyImage.h"
 #include "Amask.h"
 #include "paths.h"
+#include "arch.h"
 
 
-u16 main(u16 argc, const char** argv)
+int main(int argc, const char** argv)
 {
 	str Inpath;
 	str Outpath;
-	str Flag("alfa");
+	str Flag("png");
 	Argvs(argc, argv, Inpath, Outpath, Flag);
 	if (Flag == "alfa") {
 		MyImage::Png_To_Mask(Inpath, Outpath);
