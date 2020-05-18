@@ -1,6 +1,5 @@
 #include "Amask.h"
 
-
 static u16 string_to_u16(const str& s) {
 	u16 result = 0;
 	std::stringstream ss(s);
@@ -26,36 +25,53 @@ static u16 hex_to_u16(const str& s) {
 	return result;
 }
 
+static str del_spaces(const str& s) {
+	str result("");
+	for (auto& i : s) {
+		if (i != ' ' && i != '\t' && i != '\n') {
+			result += i;
+		}
+	}
+	return result;
+}
+
+static vec_str split(const str& s, const char c) {
+	vec_str result;
+	str tmp("");
+	for (u16 i = 0; i < s.length(); i++) {
+		if (s[i] != c) {
+			tmp += s[i];
+		} else {
+			result.push_back(del_spaces(tmp));
+			tmp = "";
+		}
+	}
+	return result;
+}
+
+
+
 Amask::Amask(const str& _name, u16 _width, u16 _height, const str& _payload)
 {
 	name = _name;
 	width = _width;
 	height = _height;
-	str tmp;
-	for (auto i : _payload) {
-		if (i != ',' && i != ' ' && i != '\t') {
-			tmp += i;
-		}
-		else {
-			if (tmp != "") {
-				u16 ti = hex_to_u16(tmp);
-				payload.push_back(ti);
-			}
-			tmp = "";
-		}
+	vec_str values = split(_payload, ',');
+	for (auto& i : values) {
+		payload.push_back(hex_to_u16(i));
 	}
 }
 
 void Amask::ToPng(const str& path) {
-	sf::Image img;
+	sf::Image* img = new sf::Image();
 	const u16 fwidth = width + 1;
 	const u16 fheight = height + 1;
 
 	const sf::Color White = sf::Color(255, 255, 255, 0);
 	const sf::Color Black = sf::Color(0, 0, 0, 255);
 
-	img.create(fwidth, fheight, White);
-	
+	img->create(fwidth, fheight, White);
+
 
 	vec_i bits;
 	u16 size = fwidth * fheight;
@@ -73,19 +89,19 @@ void Amask::ToPng(const str& path) {
 	for (u16 i = 0; i < fheight; i++) {
 		for (u16 j = 0; j < fwidth; j++) {
 			if (bits[index]) {
-				img.setPixel(j, i, Black);
+				img->setPixel(j, i, Black);
 			}
 			index++;
 		}
 	}
 	//std::cout << path + name + ".png" << std::endl;
-
-	img.saveToFile(path + name + ".png");
+	img->saveToFile(path + name + ".png");
+	delete img;
 }
 
-std::vector<Amask> Amask::ReadFile(const str& path)
+std::vector<Amask*> Amask::ReadFile(const str& path)
 {
-	std::vector<Amask> masks;
+	std::vector<Amask*> masks;
 	std::ifstream file(path);
 	vec_str alllines;
 	str line("");
@@ -98,7 +114,7 @@ std::vector<Amask> Amask::ReadFile(const str& path)
 			line = "";
 		}
 	}
-	std::regex re("\\} ([_\\w\\d]+) = \\{\n\t\\.key = ([\\db]+),\n\t\\.width = (\\d+),\n\t\\.height = (\\d+),\n\t\\.payload = \\{([\\w\\d,\\s\t]+)\\},\n\\};");
+	std::regex re("\\}\\s*([_\\w\\d]+)\\s*=\\s*\\{\n*\t*\\s*\\.key\\s*=\\s*([\\db]+)\\s*,\n*\t*\\s*\\.width\\s*=\\s*(\\d+),\n*\t*\\s*\\.height\\s*=\\s*(\\d+),\n*\t*\\s*\\.payload\\s*=\\s*\\{([\\w\\d,\\s\t\n]+)\\s*\\},\\s*\n*\\};");
 	std::smatch mask_match;
 	for (auto i : alllines) {
 		if (std::regex_search(i, mask_match, re)) {
@@ -106,7 +122,7 @@ std::vector<Amask> Amask::ReadFile(const str& path)
 			u16 width = string_to_u16(mask_match[3]);
 			u16 height = string_to_u16(mask_match[4]);
 			str payload = mask_match[5];
-			Amask mask(name, width, height, payload);
+			Amask* mask = new Amask(name, width, height, payload);
 			masks.push_back(mask);
 		}
 	}
@@ -115,8 +131,9 @@ std::vector<Amask> Amask::ReadFile(const str& path)
 
 
 void Amask::Mask_To_Png(const str& Inpath, const str& Outpath) {
-	std::vector<Amask> masks = Amask::ReadFile(Inpath + "images.c");
+	std::vector<Amask*> masks = Amask::ReadFile(Inpath + "images.c");
 	for (auto& i : masks) {
-		i.ToPng(Outpath);
+		i->ToPng(Outpath);
+		delete i;
 	}
 }
