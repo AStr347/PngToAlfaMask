@@ -12,7 +12,6 @@
  превратит все найденные маски из Inpath/images.c в .png и сохранит их в OutPath
 
 ### Значения по умалчанию
- Flag = alfa 
- Inpath = путь PngToAlfaMask.exe 
- OutPath = Inpath 
- пути должны заканчиваться на '/'
+ Flag = alfa
+ Inpath = путь PngToAlfaMask.exe
+ OutPath = Inpath
