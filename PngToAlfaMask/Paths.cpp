@@ -1,20 +1,20 @@
 #include "paths.h"
 
-/*
-find all files and dirs in directory (name)
-	@param name [in]
-	@param v [out]
-	@param check [out]
-*/
-void read_directory(const str& name, vec_str& v, std::vector<bool>& check)
+
+/// <summary>
+/// find all filesand dirs in directory(name)
+/// </summary>
+/// <param name="v"> ref for output paths vector </param>
+/// <param name="check"> vector for recursive check dirs </param>
+void read_directory(const str& Inpath, vec_str& v, std::vector<bool>& check)
 {
-	str pattern(name + "*");
+	str pattern(Inpath + "*");
 	WIN32_FIND_DATA data;
 	HANDLE hFind;
 	if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
 		do {
 			v.push_back(data.cFileName);
-			v[v.size() - 1] = name + v[v.size() - 1];
+			v[v.size() - 1] = Inpath + v[v.size() - 1];
 			check.push_back(false);
 		} while (FindNextFile(hFind, &data) != 0);
 		FindClose(hFind);
@@ -39,7 +39,9 @@ str replace(str& in, const char old, const char newc) {
 	return s;
 }
 
-
+/// <summary>
+/// init paths and flag from console args
+/// </summary>
 void Argvs(u16 argc, const char** argv, str& Inpath, str& Outpath, str& Flag) {
 	if (argc > 1) {
 		Flag = str(argv[1]);
@@ -61,5 +63,12 @@ void Argvs(u16 argc, const char** argv, str& Inpath, str& Outpath, str& Flag) {
 	}
 	else {
 		Outpath = Inpath;
+	}
+
+	if (Inpath[Inpath.length() - 1] != '/') {
+		Inpath += '/';
+	}
+	if (Outpath[Outpath.length() - 1] != '/') {
+		Outpath += '/';
 	}
 }

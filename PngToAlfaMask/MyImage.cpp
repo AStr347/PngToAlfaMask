@@ -1,8 +1,14 @@
 #include "MyImage.h"
 #include "paths.h"
 
+
+/// <summary>
+/// create not compressed payload
+/// </summary>
+/// <param name="img"> ref to SFML Image </param>
 void MyImage::PixelsToPayload(sf::Image& img) {
 	vec_i bits;
+	/* read all colors from image */
 	for (u16 i = 0; i < height; i++) {
 		for (u16 j = 0; j < width; j++) {
 			u16 color = img.getPixel(j, i).toInteger() == 255 ? 1 : 0;
@@ -10,6 +16,7 @@ void MyImage::PixelsToPayload(sf::Image& img) {
 		}
 	}
 
+	/* convert bits to u8 values */
 	u16 bit = 0;
 	u16 bitcount = 0;
 	for (u16 i = 0; i < bits.size(); i++) {
@@ -28,6 +35,12 @@ void MyImage::PixelsToPayload(sf::Image& img) {
 
 }
 
+
+/// <summary>
+/// MyImage constructor
+/// open image and fill all need data
+/// </summary>
+/// <param name="path"> path to image </param>
 MyImage::MyImage(const str& path) {
 	sf::Image img;
 	if (!img.loadFromFile(path))
@@ -35,10 +48,13 @@ MyImage::MyImage(const str& path) {
 	sf::Vector2u sizes = img.getSize();
 	width = sizes.x - 1;
 	height = sizes.y - 1;
+
+	/* get file name */
 	u32 begin = path.rfind('/') + 1;
 	u32 count = path.rfind('.') - begin;
 	name = "__" + path.substr(begin, count) + "_png";
 
+	/* set bits sizes in struct */
 	u16 wtype = 0;
 	u16 htype = 0;
 
@@ -52,19 +68,25 @@ MyImage::MyImage(const str& path) {
 
 	type = (wtype > htype ? wtype : htype) + 1;
 
+	/* inc sizes for work with image */
 	width++;
 	height++;
-
+	/* fill payload */
 	PixelsToPayload(img);
 }
 
+
+/// <summary>
+/// return string for image.c file
+/// </summary>
 str  MyImage::ToString() {
 	str spayload = "";
-
+	/* cre string with payload */
 	for (u16 i = 0; i < payload.size(); i++) {
 		spayload += To_Hex(payload[i]) + ", ";
 	}
 
+	/* cre string for output */
 	str s = "";
 	s += "const struct {\n\tunsigned key : " + str(keysizes[type]) + ";\n\t";
 	s += "unsigned width : " + str(wsizes[type]) + ";\n\t";
@@ -79,10 +101,16 @@ str  MyImage::ToString() {
 	return s;
 }
 
+/// <summary>
+/// return string for image.h
+/// </summary>
 str  MyImage::Extern() {
 	return "extern amask_t " + name + ";\n\n";
 }
 
+/// <summary>
+/// convert u16(u8) to hex string
+/// </summary>
 str To_Hex(u16 i) {
 	str s = "0x";
 	if (i < 0x10) {
@@ -95,7 +123,9 @@ str To_Hex(u16 i) {
 	return result;
 }
 
-
+/// <summary>
+/// dbg info output
+/// </summary>
 std::ostream& operator <<(std::ostream& os, MyImage& img) {
 	os << "width = " << img.width << "\theight = " << img.height << std::endl << std::hex;
 	for (u16 i = 0; i < img.payload.size(); i++)
@@ -104,14 +134,17 @@ std::ostream& operator <<(std::ostream& os, MyImage& img) {
 	return os;
 }
 
-
+/// <summary>
+/// static func for convert all .png/.bmp to alfa masks and write this in images.c and images.h
+/// </summary>
 void MyImage::Png_To_Mask(const str& Inpath, const str& Outpath) {
 	vec_str pngs;
 	std::vector<bool> check;
+	/* get all files in dir and subdirs */
 	read_directory(Inpath, pngs, check);
 
 	std::vector<MyImage> imgs;
-
+	/* get only images .png/.bmp */
 	for (u16 i = 0; i < pngs.size(); i++) {
 		str file = pngs[i];
 
@@ -125,7 +158,7 @@ void MyImage::Png_To_Mask(const str& Inpath, const str& Outpath) {
 			}
 		}
 	}
-
+	/* if we have images write all in images.h and images.c */
 	if (imgs.size() != 0) {
 		std::ofstream header(Outpath + "images.h");
 		std::ofstream source(Outpath + "images.c");

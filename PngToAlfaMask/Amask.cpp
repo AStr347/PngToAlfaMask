@@ -50,7 +50,9 @@ static vec_str split(const str& s, const char c) {
 }
 
 
-
+/// <summary>
+/// Constructor
+/// </summary>
 Amask::Amask(const str& _name, u16 _width, u16 _height, const str& _payload)
 {
 	name = _name;
@@ -62,6 +64,9 @@ Amask::Amask(const str& _name, u16 _width, u16 _height, const str& _payload)
 	}
 }
 
+/// <summary>
+/// convert mask to png
+/// </summary>
 void Amask::ToPng(const str& path) {
 	sf::Image* img = new sf::Image();
 	const u16 fwidth = width + 1;
@@ -99,6 +104,9 @@ void Amask::ToPng(const str& path) {
 	delete img;
 }
 
+/// <summary>
+/// find all alfamasks in file
+/// </summary>
 std::vector<Amask*> Amask::ReadFile(const str& path)
 {
 	std::vector<Amask*> masks;
@@ -129,7 +137,9 @@ std::vector<Amask*> Amask::ReadFile(const str& path)
 	return masks;
 }
 
-
+/// <summary>
+/// static func for convert all alfamasks from images.c to pngs
+/// </summary>
 void Amask::Mask_To_Png(const str& Inpath, const str& Outpath) {
 	std::vector<Amask*> masks = Amask::ReadFile(Inpath + "images.c");
 	for (auto& i : masks) {

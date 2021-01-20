@@ -6,7 +6,10 @@
 #include "paths.h"
 #include "arch.h"
 
-
+/// <summary>
+/// main
+/// </summary>
+/// <param name="argv"> need flag alfa - convert images to alfamasks; png - convert masks to images </param>
 int main(int argc, const char** argv)
 {
 	str Inpath;
