@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.5) # Проверка версии CMake.
+
+
+project(PngToAlfaMask)# Название проекта
+
+
+#set Release/Debug dir place
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "..")
+#all our files in src
+set(SOURCEDIR ${PROJECT_SOURCE_DIR}/src)
+#SFML include defs
+set(SFML_GRAPHICS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/sfml/include/SFML/Graphics)
+set(SFML_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/sfml/include)
+#SFML libs defs
+set(SFML_LIB_DIR ${PROJECT_SOURCE_DIR}/sfml/lib)
+set(SFML_LIBS ${SFML_LIB_DIR}/sfml-graphics.lib ${SFML_LIB_DIR}/sfml-window.lib ${SFML_LIB_DIR}/sfml-system.lib)
+
+
+include_directories(${SOURCEDIR}/include;${SFML_GRAPHICS_INCLUDE_DIR};${SFML_INCLUDE_DIR})# Расположение заголовочных файлов
+
+
+add_executable(PngToAlfaMask ${SOURCEDIR}/Main.cpp)#Создаем исполняемый файл
+
+#Добавляем подпроекты указывая пути
+add_subdirectory(${SOURCEDIR}/Pat)				
+add_subdirectory(${SOURCEDIR}/MyImage)
+add_subdirectory(${SOURCEDIR}/Amask)
+
+#линкуем библиотеки
+target_link_libraries(PngToAlfaMask Pat MyImage Amask)
