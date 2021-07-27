@@ -1,32 +1,39 @@
 #include "paths.h"
 
+#include "boost/filesystem.hpp"
+
+
+using namespace boost::filesystem;
+struct recursive_directory_range
+{
+    typedef recursive_directory_iterator iterator;
+    recursive_directory_range(path p) : p_(p) {}
+
+    iterator begin() { return recursive_directory_iterator(p_); }
+    iterator end() { return recursive_directory_iterator(); }
+
+    path p_;
+};
 
 /// <summary>
-/// find all filesand dirs in directory(name)
+/// find all files in directory(Inpath)
 /// </summary>
 /// <param name="v"> ref for output paths vector </param>
 /// <param name="check"> vector for recursive check dirs </param>
-void read_directory(const str& Inpath, vec_str& v, std::vector<bool>& check)
+void read_directory(const str& Inpath, vec_str& v)
 {
-	str pattern(Inpath + "*");
-	WIN32_FIND_DATA data;
-	HANDLE hFind;
-	if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
-		do {
-			v.push_back(data.cFileName);
-			v[v.size() - 1] = Inpath + v[v.size() - 1];
-			check.push_back(false);
-		} while (FindNextFile(hFind, &data) != 0);
-		FindClose(hFind);
-	}
-	for (u16 i = 0; i < v.size(); i++) {
-		str tmp = v[i];
-		bool read = tmp.rfind('.') == -1;
-		if (read && !check[i]) {
-			check[i] = true;
-			read_directory(v[i] + "/", v, check);
+    for (auto it : recursive_directory_range(Inpath))
+    {
+		/* replace for windows slash change to universal */
+        std::string tmp = replace((it.path().string()), '\\', '/');
+
+        const u32 dot_pos = tmp.rfind('.');
+        const u32 slash_pos = tmp.rfind('/');
+		/* need only files */
+		if((dot_pos != -1) && (slash_pos < dot_pos)){
+        	v.push_back(tmp);
 		}
-	}
+    }
 }
 
 str replace(str& in, const char old, const char newc) {

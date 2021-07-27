@@ -4,14 +4,12 @@
 #include <vector>
 #include "arch.h"
 
-#define NOT_FOUND 18446744073709551615
-
 /// <summary>
-/// find all filesand dirs in directory(name)
+/// find all files in directory(Inpath)
 /// </summary>
 /// <param name="v"> ref for output paths vector </param>
 /// <param name="check"> vector for recursive check dirs </param>
-extern void read_directory(const str& name, vec_str& v, std::vector<bool>& check);
+extern void read_directory(const str& name, vec_str& v);
 
 extern str replace(str& in, const char old, const char newc);
 
