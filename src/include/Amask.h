@@ -22,7 +22,7 @@ public:
 	/// <summary>
 	/// find all alfamasks in file
 	/// </summary>
-	static std::vector<Amask*> ReadFile(const str& path);
+	static void ReadFile(const str& path, const str& Outpath);
 	
 	/// <summary>
 	/// static func for convert all alfamasks from images.c to pngs

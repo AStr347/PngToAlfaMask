@@ -7,6 +7,8 @@
 #include <iostream>
 #include <Image.hpp>
 
+//#define WORK_WITH_SYMBOL
+
 
 static u16 string_to_u16(const str& s) {
 	u16 result = 0;
@@ -57,6 +59,15 @@ static vec_str split(const str& s, const char c) {
 	return result;
 }
 
+static bool islowcase(str& s){
+	for (auto& c : s){
+		if(c >= 'A' && c <= 'Z'){
+			return false;
+		}
+	}
+	return true;
+}
+
 
 /// <summary>
 /// Constructor
@@ -88,7 +99,8 @@ void Amask::ToPng(const str& path) {
 
 	vec_i bits;
 	u16 size = fwidth * fheight;
-	bits.resize(size);
+	/* x2 size for fix some buffer size problem */
+	bits.resize(size*2);
 	u16 index = 0;
 
 	for (u16 i = 0; i < payload.size(); i++) {
@@ -107,51 +119,55 @@ void Amask::ToPng(const str& path) {
 			index++;
 		}
 	}
-	//std::cout << path + name + ".png" << std::endl;
-	img->saveToFile(path + name + ".png");
+	str last_name(name);
+#ifdef WORK_WITH_SYMBOL
+	if(islowcase(last_name)){
+		last_name += "_low";
+	}
+#endif
+	img->saveToFile(path + last_name + ".png");
+	std::cout << last_name << std::endl;
 	delete img;
 }
 
 /// <summary>
 /// find all alfamasks in file
 /// </summary>
-std::vector<Amask*> Amask::ReadFile(const str& path)
+void Amask::ReadFile(const str& path, const str& Outpath)
 {
-	std::vector<Amask*> masks;
 	std::ifstream file(path);
-	vec_str alllines;
 	str line("");
+	std::regex re("\\}\\s*([_\\w\\d]+)\\s*=\\s*\\{\n*\t*\\s*\\.key\\s*=\\s*([\\db]+)\\s*,\n*\t*\\s*\\.width\\s*=\\s*(\\d+),\n*\t*\\s*\\.height\\s*=\\s*(\\d+),\n*\t*\\s*\\.payload\\s*=\\s*\\{([\\w\\d,\\s\t\n]+)\\s*\\},\\s*\n*\\};");
+	
 	for (str tmp; std::getline(file, tmp);) {
 		if (tmp != "\n") {
 			line += tmp + "\n";
 		}
 		if (tmp == "};") {
-			alllines.push_back(line);
+			std::smatch* mask_match = new std::smatch();
+			if (std::regex_search(line, (*mask_match), re)) {
+				if(5 > mask_match->length()){
+					std::cout << "that not mask" << std::endl;
+				} else {
+					str name((*mask_match)[1]);
+					u16 width = string_to_u16((*mask_match)[3]);
+					u16 height = string_to_u16((*mask_match)[4]);
+					str payload = (*mask_match)[5];
+					Amask* mask = new Amask(name, width, height, payload);
+					mask->ToPng(Outpath);
+					delete mask;
+				}
+			}
 			line = "";
+			delete mask_match;
 		}
 	}
-	std::regex re("\\}\\s*([_\\w\\d]+)\\s*=\\s*\\{\n*\t*\\s*\\.key\\s*=\\s*([\\db]+)\\s*,\n*\t*\\s*\\.width\\s*=\\s*(\\d+),\n*\t*\\s*\\.height\\s*=\\s*(\\d+),\n*\t*\\s*\\.payload\\s*=\\s*\\{([\\w\\d,\\s\t\n]+)\\s*\\},\\s*\n*\\};");
-	std::smatch mask_match;
-	for (auto i : alllines) {
-		if (std::regex_search(i, mask_match, re)) {
-			str name(mask_match[1]);
-			u16 width = string_to_u16(mask_match[3]);
-			u16 height = string_to_u16(mask_match[4]);
-			str payload = mask_match[5];
-			Amask* mask = new Amask(name, width, height, payload);
-			masks.push_back(mask);
-		}
-	}
-	return masks;
+	file.close();
 }
 
 /// <summary>
 /// static func for convert all alfamasks from images.c to pngs
 /// </summary>
 void Amask::Mask_To_Png(const str& Inpath, const str& Outpath) {
-	std::vector<Amask*> masks = Amask::ReadFile(Inpath + "images.c");
-	for (auto& i : masks) {
-		i->ToPng(Outpath);
-		delete i;
-	}
+	Amask::ReadFile(Inpath + "images.c", Outpath);
 }
