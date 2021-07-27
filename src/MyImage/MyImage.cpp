@@ -39,6 +39,14 @@ void MyImage::PixelsToPayload(sf::Image& img) {
 
 }
 
+static void cut_low(str& name){
+	const u32 len = name.length();
+	const u32 pos = name.rfind("_low");
+	bool result = false;
+	if(pos == len - 4){
+		name = name.substr(0, pos);
+	}
+}
 
 /// <summary>
 /// MyImage constructor
@@ -56,7 +64,13 @@ MyImage::MyImage(const str& path) {
 	/* get file name */
 	u32 begin = path.rfind('/') + 1;
 	u32 count = path.rfind('.') - begin;
-	name = "__" + path.substr((size_t)begin, (size_t)count) + "_png";
+	name = path.substr((size_t)begin, (size_t)count);
+	cut_low(name);
+	
+	/* get folder name */
+	u32 fbegin = path.rfind('/', begin - 2) + 1;
+	u32 fcount = path.rfind('/', begin) - fbegin;
+	folder_name = path.substr((size_t)fbegin, (size_t)fcount);
 
 	/* set bits sizes in struct */
 	u16 wtype = 0;
@@ -96,7 +110,7 @@ str  MyImage::ToString() {
 	s += "unsigned width : " + str(wsizes[type]) + ";\n\t";
 	s += "unsigned height : " + str(hsizes[type]) + ";\n\t";
 	s += "u8 payload[" + std::to_string(payload.size()) + "];\n";
-	s += "} " + name + " = {\n\t";
+	s += "} " + name + " __attribute__((section (\"" + folder_name + "\"))) = {\n\t";
 	s += ".key = " + str(bitkeys[type]) + ",\n\t";
 	s += ".width = " + std::to_string(width - 1) + ",\n\t";
 	s += ".height = " + std::to_string(height - 1) + ",\n\t";
@@ -109,7 +123,7 @@ str  MyImage::ToString() {
 /// return string for image.h
 /// </summary>
 str  MyImage::Extern() {
-	return "extern amask_t " + name + ";\n\n";
+	return "extern const amask_t " + name + ";\n\n";
 }
 
 /// <summary>
@@ -143,9 +157,8 @@ std::ostream& operator <<(std::ostream& os, MyImage& img) {
 /// </summary>
 void MyImage::Png_To_Mask(const str& Inpath, const str& Outpath) {
 	vec_str pngs;
-	std::vector<bool> check;
 	/* get all files in dir and subdirs */
-	read_directory(Inpath, pngs, check);
+	read_directory(Inpath, pngs);
 
 	std::vector<MyImage> imgs;
 	/* get only images .png/.bmp */
@@ -168,14 +181,16 @@ void MyImage::Png_To_Mask(const str& Inpath, const str& Outpath) {
 		std::ofstream source(Outpath + "images.c");
 
 		source << "#include \"arch.h\"\n\n\n";
-		header << "#ifmdef PNGS_H\n#define PNGS_H\n#include \"graphics.h\"\n\n";
+		header << "#ifndef IMAGES_H\n#define IMAGES_H\n#include \"graphics.h\"\n\n";
 
 		for (u16 i = 0; i < imgs.size(); i++) {
 			header << imgs[i].Extern();
 			source << imgs[i].ToString();
 		}
-		header << "#endif//PNGS_H";
+		header << "#endif//IMAGES_H";
 		header.close();
 		source.close();
+	} else {
+		std::cout << "Images not found" << std::endl;
 	}
 }

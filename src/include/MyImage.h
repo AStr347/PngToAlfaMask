@@ -23,6 +23,7 @@ public:
 	u32 height = 0;
 	u16 type = 0;
 	str name;
+	str folder_name;
 	vec_i payload;
 
 
