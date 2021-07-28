@@ -1,10 +1,9 @@
 #include "MyImage.h"
 #include "paths.h"
 #include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
 #include <fstream>
+#include "Convert.h"
+#include "StringHelp.h"
 
 /// <summary>
 /// create not compressed payload
@@ -35,18 +34,8 @@ void MyImage::PixelsToPayload(sf::Image& img) {
 			bitcount = 0;
 		}
 	}
-
-
 }
 
-static void cut_low(str& name){
-	const u32 len = name.length();
-	const u32 pos = name.rfind("_low");
-	bool result = false;
-	if(pos == len - 4){
-		name = name.substr(0, pos);
-	}
-}
 
 /// <summary>
 /// MyImage constructor
@@ -65,7 +54,7 @@ MyImage::MyImage(const str& path) {
 	u32 begin = path.rfind('/') + 1;
 	u32 count = path.rfind('.') - begin;
 	name = path.substr((size_t)begin, (size_t)count);
-	cut_low(name);
+	name = StringHelp::cut_from_end(name, "_low");
 	
 	/* get folder name */
 	u32 fbegin = path.rfind('/', begin - 2) + 1;
@@ -101,7 +90,8 @@ str  MyImage::ToString() {
 	str spayload = "";
 	/* cre string with payload */
 	for (u16 i = 0; i < payload.size(); i++) {
-		spayload += To_Hex(payload[i]) + ", ";
+		const str hex = Convert::u16_to_str(payload[i]);
+		spayload += hex + ", ";
 	}
 
 	/* cre string for output */
@@ -126,28 +116,15 @@ str  MyImage::Extern() {
 	return "extern const amask_t " + name + ";\n\n";
 }
 
-/// <summary>
-/// convert u16(u8) to hex string
-/// </summary>
-str To_Hex(u16 i) {
-	str s = "0x";
-	if (i < 0x10) {
-		s += "0";
-	}
-	std::stringstream ss;
-	ss << s << std::hex << i;
-	str result;
-	ss >> result;
-	return result;
-}
 
 /// <summary>
 /// dbg info output
 /// </summary>
 std::ostream& operator <<(std::ostream& os, MyImage& img) {
 	os << "width = " << img.width << "\theight = " << img.height << std::endl << std::hex;
-	for (u16 i = 0; i < img.payload.size(); i++)
+	for (u16 i = 0; i < img.payload.size(); i++){
 		os << img.payload[i] << " ";
+	}
 	os << std::dec << std::endl;
 	return os;
 }

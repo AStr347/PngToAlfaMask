@@ -1,72 +1,12 @@
 #include "Amask.h"
-#include <vector>
-#include <string>
 #include <regex>
 #include <fstream>
-#include <sstream>
 #include <iostream>
 #include <Image.hpp>
+#include "Convert.h"
+#include "StringHelp.h"
 
 //#define WORK_WITH_SYMBOL
-
-
-static u16 string_to_u16(const str& s) {
-	u16 result = 0;
-	std::stringstream ss(s);
-	ss >> result;
-	return result;
-}
-
-static u16 char_to_u16(const char c) {
-	u16 result = c - '0';
-	if (c >= 'A' && c <= 'F')
-		result = c - 'A' + 10;
-	else if (c >= 'a' && c <= 'f')
-		result = c - 'a' + 10;
-	return result;
-}
-
-static u16 hex_to_u16(const str& s) {
-	u16 result = 0;
-	str tmp = s.substr(2);
-	u16 left = char_to_u16(tmp[0]);
-	u16 right = char_to_u16(tmp[1]);
-	result = (left << 4) + right;
-	return result;
-}
-
-static str del_spaces(const str& s) {
-	str result("");
-	for (auto& i : s) {
-		if (i != ' ' && i != '\t' && i != '\n') {
-			result += i;
-		}
-	}
-	return result;
-}
-
-static vec_str split(const str& s, const char c) {
-	vec_str result;
-	str tmp("");
-	for (u16 i = 0; i < s.length(); i++) {
-		if (s[i] != c) {
-			tmp += s[i];
-		} else {
-			result.push_back(del_spaces(tmp));
-			tmp = "";
-		}
-	}
-	return result;
-}
-
-static bool islowcase(str& s){
-	for (auto& c : s){
-		if(c >= 'A' && c <= 'Z'){
-			return false;
-		}
-	}
-	return true;
-}
 
 
 /// <summary>
@@ -77,9 +17,10 @@ Amask::Amask(const str& _name, u16 _width, u16 _height, const str& _payload)
 	name = _name;
 	width = _width;
 	height = _height;
-	vec_str values = split(_payload, ',');
+	vec_str values = StringHelp::split(_payload, ',');
 	for (auto& i : values) {
-		payload.push_back(hex_to_u16(i));
+		u16 num = Convert::hex_to_u16(i);
+		payload.push_back(num);
 	}
 }
 
@@ -121,7 +62,7 @@ void Amask::ToPng(const str& path) {
 	}
 	str last_name(name);
 #ifdef WORK_WITH_SYMBOL
-	if(islowcase(last_name)){
+	if(StringHelp::islowcase(last_name)){
 		last_name += "_low";
 	}
 #endif
@@ -150,8 +91,8 @@ void Amask::ReadFile(const str& path, const str& Outpath)
 					std::cout << "that not mask" << std::endl;
 				} else {
 					str name((*mask_match)[1]);
-					u16 width = string_to_u16((*mask_match)[3]);
-					u16 height = string_to_u16((*mask_match)[4]);
+					u16 width = Convert::string_to_u16((*mask_match)[3]);
+					u16 height = Convert::string_to_u16((*mask_match)[4]);
 					str payload = (*mask_match)[5];
 					Amask* mask = new Amask(name, width, height, payload);
 					mask->ToPng(Outpath);

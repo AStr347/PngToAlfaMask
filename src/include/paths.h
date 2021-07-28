@@ -11,8 +11,6 @@
 /// <param name="check"> vector for recursive check dirs </param>
 extern void read_directory(const str& name, vec_str& v);
 
-extern str replace(str& in, const char old, const char newc);
-
 
 /// <summary>
 /// init paths and flag from console args

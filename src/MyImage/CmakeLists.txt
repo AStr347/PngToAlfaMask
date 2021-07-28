@@ -1,2 +1,2 @@
 add_library(MyImage STATIC MyImage.cpp)# Создание статической библиотеки
-target_link_libraries(MyImage Pat ${SFML_LIBS})
+target_link_libraries(MyImage Pat Convert StringHelp ${SFML_LIBS})

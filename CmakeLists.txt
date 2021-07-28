@@ -32,6 +32,8 @@ include_directories(${SOURCEDIR}/include;${SFML_GRAPHICS_INCLUDE_DIR};${SFML_INC
 add_executable(PngToAlfaMask ${SOURCEDIR}/Main.cpp)#Создаем исполняемый файл
 
 #Добавляем подпроекты указывая пути
+add_subdirectory(${SOURCEDIR}/Convert)
+add_subdirectory(${SOURCEDIR}/StringHelp)
 add_subdirectory(${SOURCEDIR}/Pat)
 add_subdirectory(${SOURCEDIR}/MyImage)
 add_subdirectory(${SOURCEDIR}/Amask)

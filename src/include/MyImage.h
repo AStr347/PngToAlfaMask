@@ -53,12 +53,6 @@ public:
 
 
 /// <summary>
-/// convert u16(u8) to hex string
-/// </summary>
-extern str To_Hex(u16 i);
-
-
-/// <summary>
 /// dbg info output
 /// </summary>
 extern std::ostream& operator <<(std::ostream& os, MyImage& img);

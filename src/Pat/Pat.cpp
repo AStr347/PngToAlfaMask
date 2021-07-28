@@ -1,4 +1,5 @@
 #include "paths.h"
+#include "StringHelp.h"
 
 #include "boost/filesystem.hpp"
 
@@ -25,7 +26,7 @@ void read_directory(const str& Inpath, vec_str& v)
     for (auto it : recursive_directory_range(Inpath))
     {
 		/* replace for windows slash change to universal */
-        std::string tmp = replace((it.path().string()), '\\', '/');
+        std::string tmp = StringHelp::replace((it.path().string()), '\\', '/');
 
         const u32 dot_pos = tmp.rfind('.');
         const u32 slash_pos = tmp.rfind('/');
@@ -36,15 +37,6 @@ void read_directory(const str& Inpath, vec_str& v)
     }
 }
 
-str replace(str& in, const char old, const char newc) {
-	str s(in);
-	for (u16 i = 0; i < s.length(); i++) {
-		if (s[i] == old) {
-			s[i] = newc;
-		}
-	}
-	return s;
-}
 
 /// <summary>
 /// init paths and flag from console args
@@ -56,19 +48,17 @@ void Argvs(u16 argc, const char** argv, str& Inpath, str& Outpath, str& Flag) {
 
 	if (argc > 2) {
 		Inpath = str(argv[2]);
-	}
-	else {
+	} else {
 		str sub = str(argv[0]);
 		sub = sub.substr(0, sub.rfind('\\') + 1);
 		Inpath = sub;
 	}
-	Inpath = replace(Inpath, '\\', '/');
+	Inpath = StringHelp::replace(Inpath, '\\', '/');
 
 	if (argc > 3) {
 		Outpath = str(argv[3]);
-		Outpath = replace(Outpath, '\\', '/');
-	}
-	else {
+		Outpath = StringHelp::replace(Outpath, '\\', '/');
+	} else {
 		Outpath = Inpath;
 	}
 
