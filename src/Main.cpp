@@ -14,7 +14,7 @@ int main(int argc, const char** argv)
 {
 	str Inpath;
 	str Outpath;
-	str Flag("png");
+	str Flag("alfa");
 	Argvs(argc, argv, Inpath, Outpath, Flag);
 	if (Flag == "alfa") {
 		MyImage::Png_To_Mask(Inpath, Outpath);

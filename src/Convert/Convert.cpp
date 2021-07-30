@@ -29,7 +29,7 @@ u16 Convert::hex_to_u16(const str& s) {
 /// <summary>
 /// convert u16(u8) to hex string
 /// </summary>
-str Convert::u16_to_str(const u16 i) {
+str Convert::u16_to_hex(const u16 i) {
 	str s = "0x";
 	if (i < 0x10) {
 		s += "0";
@@ -38,5 +38,24 @@ str Convert::u16_to_str(const u16 i) {
 	ss << s << std::hex << i;
 	str result;
 	ss >> result;
+	return result;
+}
+
+u16 Convert::bin_to_u16(const str& s){
+	u16 result = 0;
+	for(auto c : s){
+		u16 bit = char_to_u16(c);
+		result <<= 1;
+		result += bit;
+	}
+	return result;
+}
+
+
+str Convert::u8_to_bin(const u8 num){
+	str result("");
+	for (int i = 0; i < 8; i++){
+		result += '0' + ((num >> i) & 1);
+	}
 	return result;
 }

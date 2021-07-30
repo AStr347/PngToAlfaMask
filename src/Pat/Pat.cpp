@@ -28,8 +28,8 @@ void read_directory(const str& Inpath, vec_str& v)
 		/* replace for windows slash change to universal */
         std::string tmp = StringHelp::replace((it.path().string()), '\\', '/');
 
-        const u32 dot_pos = tmp.rfind('.');
-        const u32 slash_pos = tmp.rfind('/');
+        const size_t dot_pos = tmp.rfind('.');
+        const size_t slash_pos = tmp.rfind('/');
 		/* need only files */
 		if((dot_pos != -1) && (slash_pos < dot_pos)){
         	v.push_back(tmp);

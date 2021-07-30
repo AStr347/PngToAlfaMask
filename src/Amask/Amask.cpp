@@ -6,7 +6,6 @@
 #include "Convert.h"
 #include "StringHelp.h"
 
-//#define WORK_WITH_SYMBOL
 
 
 /// <summary>
@@ -40,18 +39,14 @@ void Amask::ToPng(const str& path) {
 
 	vec_i bits;
 	u16 size = fwidth * fheight;
-	/* x2 size for fix some buffer size problem */
-	bits.resize(size*2);
-	u16 index = 0;
 
 	for (u16 i = 0; i < payload.size(); i++) {
 		for (u16 j = 0; j < 8; j++) {
-			bits[index] = ((payload[i] >> j) & 1);
-			index++;
+			bits.push_back(((payload[i] >> j) & 1));
 		}
 	}
 
-	index = 0;
+	u16 index = 0;
 	for (u16 i = 0; i < fheight; i++) {
 		for (u16 j = 0; j < fwidth; j++) {
 			if (bits[index]) {
@@ -66,8 +61,9 @@ void Amask::ToPng(const str& path) {
 		last_name += "_low";
 	}
 #endif
-	img->saveToFile(path + last_name + ".png");
-	std::cout << last_name << std::endl;
+	if(img->saveToFile(path + last_name + ".png")){
+		std::cout << last_name << std::endl;
+	}
 	delete img;
 }
 

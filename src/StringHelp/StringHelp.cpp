@@ -13,9 +13,9 @@ str StringHelp::replace(const str& in, const char old, const char newc) {
 }
 
 str StringHelp::cut_from_end(const str& name, const str for_cut){
-	const u32 len = name.length();
-	const u32 pos = name.rfind(for_cut);
-    const u32 clen = for_cut.length();
+	const size_t len = name.length();
+	const size_t pos = name.rfind(for_cut);
+    const size_t clen = for_cut.length();
 	bool result = false;
 	if(pos == len - clen){
 		return name.substr(0, pos);

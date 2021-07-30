@@ -17,6 +17,8 @@ class MyImage
 	/// </summary>
 	/// <param name="img"> ref to SFML Image </param>
 	void PixelsToPayload(sf::Image& img);
+	void draw(str s);
+	void Compress();
 
 public:
 	u32 width = 0;
