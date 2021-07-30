@@ -1,0 +1,2 @@
+add_library(CompressedMem STATIC CompressedMem.cpp)# Создание статической библиотеки
+target_link_libraries(CompressedMem Convert)
