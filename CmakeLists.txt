@@ -35,6 +35,7 @@ add_executable(PngToAlfaMask ${SOURCEDIR}/Main.cpp)#Создаем исполн�
 add_subdirectory(${SOURCEDIR}/Convert)
 add_subdirectory(${SOURCEDIR}/StringHelp)
 add_subdirectory(${SOURCEDIR}/Pat)
+add_subdirectory(${SOURCEDIR}/CompressedMem)
 add_subdirectory(${SOURCEDIR}/MyImage)
 add_subdirectory(${SOURCEDIR}/Amask)
 
