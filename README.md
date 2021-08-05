@@ -1,4 +1,5 @@
 # PngToAlfaMask
+[ссылка на самого себя](https://github.com/AStr347/PngToAlfaMask)
 ## Что бы собрать нужно
 1. Разархивировать sfml.rar в каталог проекта
 2. Разархивировать boost.rar в каталог проекта

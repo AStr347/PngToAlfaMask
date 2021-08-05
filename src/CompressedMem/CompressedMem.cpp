@@ -45,12 +45,14 @@ u16 CompressedMem::to_u16(){
     u16 value = 0;
     if(len < 7){
         monochrom = false;
-        bits = str(7 - len, '0') + bits;
+        bits += str(7 - len, '0');
     }
     if(monochrom){
         value = (1 << 7) | (Convert::char_to_u16(bits[0]) << 6) | (len - 7);
     } else {
-        value = Convert::bin_to_u16(bits);
+        str tmp = bits;
+        reverse(tmp.begin(), tmp.end());
+        value = Convert::bin_to_u16(tmp);
     }
     return value;
 }
