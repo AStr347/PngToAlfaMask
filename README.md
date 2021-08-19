@@ -1,10 +1,7 @@
 # PngToAlfaMask
 [ссылка на самого себя](https://github.com/AStr347/PngToAlfaMask)
-## Что бы собрать нужно
-1. Разархивировать sfml.rar в каталог проекта
-2. Разархивировать boost.rar в каталог проекта
 
-## Для работы программы так же требуется переместить .dll файлы из sfml/dlls к .exe файлу
+## Для работы программы в Windows так же требуется переместить .dll файлы из SFML_PATH\bin к .exe файлу
 
 ## Применение
  ./PngToAlfaMask.exe Flag Inpath OutPath
@@ -14,5 +11,5 @@
 
 ### Значения по умалчанию
 1. Flag = alfa
-2. Inpath = путь PngToAlfaMask.exe
+2. Inpath = путь к PngToAlfaMask.exe
 3. OutPath = Inpath

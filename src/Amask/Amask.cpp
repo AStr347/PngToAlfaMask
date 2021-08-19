@@ -2,7 +2,7 @@
 #include <regex>
 #include <fstream>
 #include <iostream>
-#include <Image.hpp>
+#include <SFML/Graphics/Image.hpp>
 #include "Convert.h"
 #include "StringHelp.h"
 
@@ -75,7 +75,7 @@ void Amask::ReadFile(const str& path, const str& Outpath)
 	std::ifstream file(path);
 	str line("");
 	std::regex re("\\}\\s*([_\\w\\d]+)\\s*=\\s*\\{\n*\t*\\s*\\.key\\s*=\\s*([\\db]+)\\s*,\n*\t*\\s*\\.width\\s*=\\s*(\\d+),\n*\t*\\s*\\.height\\s*=\\s*(\\d+),\n*\t*\\s*\\.payload\\s*=\\s*\\{([\\w\\d,\\s\t\n]+)\\s*\\},\\s*\n*\\};");
-	
+
 	for (str tmp; std::getline(file, tmp);) {
 		if (tmp != "\n") {
 			line += tmp + "\n";

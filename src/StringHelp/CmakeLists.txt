@@ -1,1 +1,1 @@
-add_library(StringHelp STATIC StringHelp.cpp)# Создание статической библиотеки
+add_library(StringHelp STATIC StringHelp.cpp)# Create static lib

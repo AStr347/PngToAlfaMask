@@ -1,1 +1,1 @@
-add_library(Convert STATIC Convert.cpp)# Создание статической библиотеки
+add_library(Convert STATIC Convert.cpp)# Create static lib

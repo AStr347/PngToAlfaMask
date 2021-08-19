@@ -1,5 +1,7 @@
-add_library(Pat STATIC Pat.cpp)# Создание статической библиотеки
+
+add_library(Pat STATIC Pat.cpp)# Create static lib
 target_link_libraries(  Pat 
                         PRIVATE 
-                        debug ${BOOST_DEBUG_LIB} StringHelp 
-                        optimized ${BOOST_RELEASE_LIB} StringHelp)
+                        debug ${Boost_FILESYSTEM_LIBRARY_DEBUG} StringHelp 
+                        PRIVATE
+                        optimized ${Boost_FILESYSTEM_LIBRARY_RELEASE} StringHelp)

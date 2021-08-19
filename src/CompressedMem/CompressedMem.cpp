@@ -1,5 +1,6 @@
 #include "CompressedMem.h"
 #include "Convert.h"
+#include <algorithm>
 
 CompressedMem::CompressedMem(const char firstbit){
     bits += firstbit;
@@ -68,9 +69,9 @@ str CompressedMem::toString(){
 /**
  * todo:
  * @param s - [in] string, that have len more then zero
- * 
+ *
  * @return
- */ 
+ */
 vec_i CompressedMem::from_string(str& s){
     const size_t len = s.length();
     vec_i result;

@@ -1,6 +1,6 @@
 #pragma once
 #include "arch.h"
-#include "Image.hpp"
+#include <SFML/Graphics/Image.hpp>
 
 class MyImage
 {
@@ -10,7 +10,7 @@ class MyImage
 	constexpr static const char* bitkeys[4] = { "0b1","0b10","0b100","0b1000" };
 	constexpr static u32 wmax[4] = { 0b111, 0b1111111, 0b1111111111, 0b11111111111111 };
 	constexpr static u32 hmax[4] = { 0b1111, 0b1111111, 0b11111111111, 0b11111111111111 };
-	
+
 
 	/// <summary>
 	/// create not compressed payload
