@@ -3,3 +3,7 @@ sfml/*
 boost/*
 Release*
 Debug*
+*CMakeFiles/*
+*.a
+*.cmake
+*/Makefile
