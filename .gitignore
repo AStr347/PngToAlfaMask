@@ -19,3 +19,5 @@ _deps
 *.vcxproj
 *.sln
 *.filters
+*.exe
+imgs/

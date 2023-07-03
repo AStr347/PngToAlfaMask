@@ -8,7 +8,7 @@ using namespace boost::filesystem;
 struct recursive_directory_range
 {
     typedef recursive_directory_iterator iterator;
-    recursive_directory_range(path p) : p_(p) {}
+    recursive_directory_range(const path& p) : p_(p) {}
 
     iterator begin() { return recursive_directory_iterator(p_); }
     iterator end() { return recursive_directory_iterator(); }

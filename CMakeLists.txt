@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5) # check CMake version.
+cmake_minimum_required(VERSION 3.26) # check CMake version.
 
 
 project(PngToAlfaMask)# Название проекта
@@ -6,45 +6,34 @@ set(CMAKE_CXX_STANDARD 17)# use c++17
 
 #set Release/Debug dir place
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/runtime)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "..")
 #all our files in src
 set(SOURCEDIR ${PROJECT_SOURCE_DIR}/src)
 
+set(SFML_STATIC_LIBRARIES TRUE)
 
+# set(SFML_USE_STATIC_STD_LIBS True)
 # Find SFML shared libraries
-if (WIN32)
-	# values for find boost in windows
-	# set your paths
-	set(SFML_DIR C:/SDK/SFML-2.5.1/lib/cmake/SFML)
-	set(SFML_INCLUDE_DIR C:/SDK/SFML-2.5.1/include)
-endif()
-
-find_package(SFML 2.5
+find_package(SFML
 		COMPONENTS
 		system window graphics REQUIRED
 )
+
 set(SFML_LIBS sfml-graphics sfml-window sfml-system)
 
 
 # Find Boost shared libraries
-if (WIN32)
-	# values for find boost in windows
-	# set your paths
-	set(Boost_USE_STATIC_LIBS 		ON)  # only find static libs
-	set(Boost_USE_DEBUG_LIBS 		ON)  # ignore debug libs and
-	set(Boost_USE_RELEASE_LIBS 		ON)  # only find release libs
-	set(Boost_USE_MULTITHREADED 	ON)
-	set(Boost_USE_STATIC_RUNTIME    OFF)
-	set(BOOST_INCLUDEDIR C:/SDK/boost_1_76_0/)
-	set(BOOST_LIBRARYDIR C:/SDK/boost_1_76_0/stage/lib)
-	set(BOOST_ROOT C:/SDK/boost_1_76_0/boost)
-endif()
+set(Boost_USE_STATIC_LIBS 		ON)  # only find static libs
+set(Boost_USE_DEBUG_LIBS 		ON)  # ignore debug libs and
+set(Boost_USE_RELEASE_LIBS 		ON)  # only find release libs
+set(Boost_USE_MULTITHREADED 	ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+set(Boost_NO_WARN_NEW_VERSIONS  ON)
+set(Boost_ARCHITECTURE "-x64")
 
-find_package(Boost
-		COMPONENTS
-		filesystem REQUIRED
-)
-
+find_package(Boost 
+		COMPONENTS 
+		system filesystem REQUIRED)
 
 
 include_directories(${SOURCEDIR}/include ${SFML_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})# set dirs with headers
