@@ -107,7 +107,11 @@ str  MyImage::ToString() {
 	s += "unsigned width : " + str(wsizes[type]) + ";\n\t";
 	s += "unsigned height : " + str(hsizes[type]) + ";\n\t";
 	s += "u8 payload[" + std::to_string(payload.size()) + "];\n";
+#if defined(WORK_WITH_SECTIONS)
 	s += "} " + name + " __attribute__((section (\"" + folder_name + "\"))) = {\n\t";
+#else
+	s += "} " + name + " = {\n\t";
+#endif
 	s += ".key = " + str(bitkeys[type]) + ",\n\t";
 	s += ".width = " + std::to_string(width - 1) + ",\n\t";
 	s += ".height = " + std::to_string(height - 1) + ",\n\t";

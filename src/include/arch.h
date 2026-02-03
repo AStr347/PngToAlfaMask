@@ -18,4 +18,6 @@ typedef std::vector<str> vec_str;
 /* create compresed masks */
 #define COMPRESSED
 /* save lowcase name files with '_low' in end */
-#define WORK_WITH_SYMBOL
+//#define WORK_WITH_SYMBOL
+/* add __attribute__(section ("{dir_name}")) */
+//#define WORK_WITH_SECTIONS
