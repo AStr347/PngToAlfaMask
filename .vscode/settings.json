@@ -1,5 +1,14 @@
 {
     "files.associations": {
+        "*.cfs": "asm-collection",
+        "*.toml": "toml",
+        "*.link": "linkerscript",
+        "*.x": "linkerscript",
+		"*.h": "c",
+		"*.c": "c",
+		"*.cpp": "cpp",
+		"*.hpp": "cpp",
+		"*.ipp": "cpp",
         "vector": "cpp",
         "sstream": "cpp",
         "iostream": "cpp",
@@ -95,7 +104,7 @@
         "valarray": "cpp",
         "variant": "cpp",
         "xhash": "cpp",
-        "*.ipp": "cpp"
+        "rope": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }
